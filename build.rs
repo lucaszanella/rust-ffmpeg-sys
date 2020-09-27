@@ -630,18 +630,20 @@ fn main() {
         match target_arch.as_str() {
             "x86" => {arch_folder = "x68"},
             "x86_64" => {arch_folder = "x86_64"},
-            "aarch64" => {arch_folder = "aarch64"},
+            "aarch64" => {arch_folder = "arm64-v8a"},
             "arm" => {arch_folder = "arm"},
             _ => panic!("Operating system not supported")
         }
-        println!("compiling for {} with arch {}", os_folder, arch_folder);
+        //println!("compiling for {} with arch {}", os_folder, arch_folder);
         println!(
             "cargo:rustc-link-search=native={}",
             ffmpeg_root_dir.join(format!("{}/{}/lib", os_folder, arch_folder)).to_string_lossy()
         );
         link_to_libraries(statik);
+        //println!("include dir: {}", ffmpeg_root_dir.join(format!("{}/{}/include", os_folder, arch_folder)).to_str().unwrap());
         vec![ffmpeg_root_dir.join(format!("{}/{}/include", os_folder, arch_folder))]
     }
+    
     // Use prebuilt library
     else if let Ok(ffmpeg_dir) = env::var("FFMPEG_DIR") {
         let ffmpeg_dir = PathBuf::from(ffmpeg_dir);

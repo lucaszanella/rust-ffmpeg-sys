@@ -613,6 +613,35 @@ fn main() {
 
         vec![search().join("include")]
     }
+    else if let Ok(ffmpeg_root_dir) = env::var("MULTI_ARCHITECTURE_PREBUILT") {
+        let ffmpeg_root_dir = PathBuf::from(ffmpeg_root_dir);
+        let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+        let os_folder: &str;
+        match target_os.as_str() {
+            "android" => {os_folder = "android";},
+            "ios" => {os_folder = "ios";},
+            "linux" => {os_folder = "linux";},
+            "windows" => {os_folder = "windows";},
+            "macos" => {os_folder = "macos";},
+            _ => panic!("Operating system not supported")
+        }
+        let arch_folder: &str;
+        let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
+        match target_arch.as_str() {
+            "x86" => {arch_folder = "x68"},
+            "x86_64" => {arch_folder = "x86_64"},
+            "aarch64" => {arch_folder = "aarch64"},
+            "arm" => {arch_folder = "arm"},
+            _ => panic!("Operating system not supported")
+        }
+        println!("compiling for {} with arch {}", os_folder, arch_folder);
+        println!(
+            "cargo:rustc-link-search=native={}",
+            ffmpeg_root_dir.join(format!("{}/{}/lib", os_folder, arch_folder)).to_string_lossy()
+        );
+        link_to_libraries(statik);
+        vec![ffmpeg_root_dir.join(format!("{}/{}/include", os_folder, arch_folder))]
+    }
     // Use prebuilt library
     else if let Ok(ffmpeg_dir) = env::var("FFMPEG_DIR") {
         let ffmpeg_dir = PathBuf::from(ffmpeg_dir);

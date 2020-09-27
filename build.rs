@@ -643,7 +643,6 @@ fn main() {
         //println!("include dir: {}", ffmpeg_root_dir.join(format!("{}/{}/include", os_folder, arch_folder)).to_str().unwrap());
         vec![ffmpeg_root_dir.join(format!("{}/{}/include", os_folder, arch_folder))]
     }
-    
     // Use prebuilt library
     else if let Ok(ffmpeg_dir) = env::var("FFMPEG_DIR") {
         let ffmpeg_dir = PathBuf::from(ffmpeg_dir);
